@@ -1,0 +1,23 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         anarch
+version:      0.01
+version_from: anarch
+installdirs:  site
+requires:
+    CSS::DOM:                      0.03
+    CSS::DOM::Parser:              0
+    CSS::DOM::Rule:                0.03
+    Encode:                        0
+    File::Basename:                0
+    File::Path:                    0
+    File::Slurp:                   0
+    HTML::DOM:                     0.025
+    LWP::UserAgent:                5.815
+    URI:                           0
+    URI::file:                     0
+    WWW::Scripter:                 0
+    WWW::Scripter::Plugin::Ajax:   0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17
