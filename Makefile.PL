@@ -26,4 +26,5 @@ WriteMakefile(
     dist               => { COMPRESS => 'gzip -9f', SUFFIX => 'gz',
                             TAR => 'COPYFILE_DISABLE=1 tar' },
     clean              => { FILES => 'anarch-*' },
+    PM                 => {},
 );

@@ -1,1 +1,2 @@
-package App::Anarch; $VERSION = '0.01'
+package App::Anarch;
+$VERSION = '0.02'

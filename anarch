@@ -1,6 +1,6 @@
 #!/usr/bin/perl -s
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 if($h || $help || $v || $version || !$start) {
  require File::Slurp;
@@ -20,11 +20,15 @@ use CSS::DOM::Rule 0.03 ':all';
 use File::Basename;
 use File::Path;
 use HTML::DOM 0.025;
+use LWP::UserAgent 5.815;
 use URI;
 use URI::file;
 use WWW::Scripter;
 
 $m = new WWW::Scripter agent => $agent = "anarch/$VERSION";
+$lwp = new LWP::UserAgent agent => $agent;
+env_proxy $lwp;
+
 
 $root ||= ($start =~ /^(.*\/)/)[0];
 $save_as = ${'save-as'};
@@ -92,7 +96,7 @@ my $link_tag_qr = qr/^(?:${\join '|', keys %link_attr})\z/;
 fetch($start);
 
 sub fetch {
-	my $url = shift;
+	my ($url,$ct) = @_;
 	return if $url !~ /^\Q$root\E(.*)/;
 	my $save_name = $1;
 	return if $visited{$url}++;
@@ -102,16 +106,24 @@ sub fetch {
 	$save_name =~ s/(?<=\/)\z/index.html/;
 
 	my $syncked;
+	my $caput;
 	if($sync) {{
+#		warn "checking $save_name for mods";
 		my $mod_time = (stat $save_name)[9];
 		defined $mod_time or last;
-		require LWP::UserAgent;
-		$lwp ||= new LWP::UserAgent agent => $agent;
-		env_proxy $lwp;
-		$lwp->head($url)->last_modified == $mod_time
-		 and ++$syncked;
+		$caput = $lwp->head($url);
+		if( # not modified
+		 $caput->is_success and $caput->last_modified == $mod_time
+		) {
+			# No point in checking for links in sound files
+			return unless (
+			 defined $ct ? $ct : ($ct = $caput->content_type)
+			)  =~ '^text/';
+			++$syncked;
+		}
 	}}
 	if($syncked) {
+#		warn "checking $save_name for links";
 		$local_url = new_abs URI::file $save_name;
 		$m->location->replace($url);
 		$syncked = 0 unless $m->success;
@@ -119,12 +131,26 @@ sub fetch {
 	if(!$syncked) {
 		print #"\t" x $level .
 		 "$url\n";
-		$need_doc_clone = undef;
-		$m->location->replace($url);
+
+		# Check the file type before downloading it into memory. It
+		# might be a huge binary file.
+		$caput ||= $lwp->head($url);
+		if($caput->content_type =~ '^text/') {
+			$need_doc_clone = undef;
+			$m->location->replace($url);
+		}
+		else { # for binary files, download directly to a file
+		       # and use a handler to abort WWW::Scripter’s post-
+		       # processing.
+			$m->set_my_handler(
+			 response_done => sub { WWW::Scripter::abort }
+			);
+			$m->get($url, ':content_file', $save_name);
+			$m->set_my_handler( response_done => undef );
+		}
 	}
 	return unless $m->success;
 	
-	my $ct = shift;
 	my $is_html;
 	my $content;
 	my @links; @link_accumulator = ();
@@ -306,7 +332,7 @@ anarch - A script for creating offline copies of websites
 
 =head1 VERSION
 
-0.01 (alpha)
+0.02 (alpha)
 
 =head1 SYNOPSIS
 
@@ -403,6 +429,18 @@ When URLs in CSS style sheets are made relative, they are not properly
 escaped, so quotation marks may produce invalid CSS.
 
 The C<-run-scripts> option causes the script to eat up all your memory.
+
+If a scripts browses to another page and C<-dom> or C<-remove-scripts> is
+specified, then the wrong DOM tree is serialised.
+
+There is no way to set the local IP address to bind to. But you can use
+this nutty workaround, which requires L<Hook::WrapSub>:
+
+  perl -sS -MHook::WrapSub -MIO::Socket::INET \
+    -M'less Hook::WrapSub::wrap_subs
+      sub{push @_, LocalAddr => "10.10.10.205" },
+      "IO::Socket::INET::new"' \
+    anarch ...
 
 There are no tests yet.
 
