@@ -1,2 +1,2 @@
 package App::Anarch;
-$VERSION = '0.02'
+$VERSION = '0.03'

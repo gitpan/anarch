@@ -1,15 +1,12 @@
-anarch, version 0.02 (alpha)
+anarch, version 0.03 (alpha)
 
 A script for creating offline copies of websites.
 
 
 CHANGES IN THIS RELEASE
 
-See the Changes file for more detail.
-
-• Two speed optimisations
-• Makefile.PL has been fixed so that the dummy.pm file is no longer
-  installed.
+A serious bug that caused binary files to  be  overwritten  with  the
+referring page after they had been  downloaded  has  now  been  fixed.
 
 
 INSTALLATION

@@ -1,6 +1,6 @@
 anarch
 Changes
-dummy.pm
+lib/App/Anarch.pm
 Makefile.PL
 MANIFEST
 README

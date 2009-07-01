@@ -1,6 +1,6 @@
 #!/usr/bin/perl -s
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 if($h || $help || $v || $version || !$start) {
  require File::Slurp;
@@ -147,6 +147,7 @@ sub fetch {
 			);
 			$m->get($url, ':content_file', $save_name);
 			$m->set_my_handler( response_done => undef );
+			return;
 		}
 	}
 	return unless $m->success;
@@ -332,7 +333,7 @@ anarch - A script for creating offline copies of websites
 
 =head1 VERSION
 
-0.02 (alpha)
+0.03 (alpha)
 
 =head1 SYNOPSIS
 

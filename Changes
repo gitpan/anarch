@@ -1,5 +1,10 @@
 Revision history for anarch
 
+0.03  1 July, 2009
+      A serious bug that caused binary files to be  overwritten  with
+      the referring page after  they  had  been  downloaded  has  now
+      been fixed.
+
 0.02  27 June, 2009
     • In sync mode,  local files that had not been modified would  be
       scanned for links,  even if they were binary  files;  now  such
