@@ -1,12 +1,13 @@
-anarch, version 0.03 (alpha)
+anarch, version 0.04 (alpha)
 
 A script for creating offline copies of websites.
 
 
 CHANGES IN THIS RELEASE
 
-A serious bug that caused binary files to  be  overwritten  with  the
-referring page after they had been  downloaded  has  now  been  fixed.
+• New -add-extensions option.
+• Binary files can now be downloaded to folders that do  not  already
+  exist. They used to be skipped.
 
 
 INSTALLATION
@@ -26,7 +27,7 @@ Or you can use the following:
     [sudo] make install
 
 
-DEPENDENCIES
+PREREQUISITES
 
 This module requires  perl  5.8.3 or higher (5.8.4  or  higher  recom-
 mended)  and the following modules,  which can be found on the  CPAN:
@@ -37,6 +38,7 @@ mended)  and the following modules,  which can be found on the  CPAN:
   WWW::Scripter
   CSS::DOM 0.03 or higher
   File::Slurp
+  WWW::Scripter::Plugin::Ajax
 
 and WWW::Scripter::Plugin::Ajax for the -run-scripts option.
 

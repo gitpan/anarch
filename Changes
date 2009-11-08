@@ -1,5 +1,10 @@
 Revision history for anarch
 
+0.04  8 November, 2009
+    • New -add-extensions option.
+    • Binary files can now be  downloaded  to  folders  that  do  not
+      already exist. They used to be skipped.
+
 0.03  1 July, 2009
       A serious bug that caused binary files to be  overwritten  with
       the referring page after  they  had  been  downloaded  has  now
